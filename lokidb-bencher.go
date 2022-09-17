@@ -15,6 +15,7 @@ var (
 	addr       = flag.String("addr", "localhost:50051", "Server address")
 	iterations = flag.Int("it", 10000, "Number of iterations")
 	command    = flag.String("c", "get", "Command to benchmark options: [get, set, del]")
+	threads    = flag.Int("threads", 1, "Number of threads to use")
 )
 
 var validCommands = map[string]struct{}{
@@ -49,7 +50,7 @@ func exec(c *client.Client, command string) {
 	wg := new(sync.WaitGroup)
 
 	// Adding routines to workgroup and running then
-	for i := 0; i < 250; i++ {
+	for i := 0; i < *threads; i++ {
 		wg.Add(1)
 		go worker(c, lCh, wg, command)
 	}
